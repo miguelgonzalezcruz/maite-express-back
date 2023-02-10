@@ -12,6 +12,5 @@ module.exports = {
   rules: {
     "no-underscore-dangle": ["off", { allow: ["id"] }],
     "no-unused-vars": "off",
-    "no-extraneous-dependencies": "off",
   },
 };
