@@ -1,0 +1,35 @@
+{
+  "name": "maite-express-back",
+  "version": "1.0.0",
+  "description": "Maite Reciclando backend with Express and MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguelgonzalezcruz/maite-express-back.git"
+  },
+  "author": "Miguel Gonzalez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguelgonzalezcruz/maite-express-back/issues"
+  },
+  "homepage": "https://github.com/miguelgonzalezcruz/maite-express-back#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1",
+    "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.33.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.4"
+  }
+}
