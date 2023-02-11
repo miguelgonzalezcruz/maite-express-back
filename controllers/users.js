@@ -8,7 +8,7 @@ const { errorHandling, orFailError } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
 const hubspotClient = new hubspot.Client({
-  accessToken: "pat-eu1-7ecaefe1-792a-42db-81ff-386f0224ad9b",
+  accessToken: "access_token",
 });
 
 // const hubspotClient = new hubspot.Client({
