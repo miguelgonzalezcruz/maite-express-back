@@ -12,5 +12,6 @@ module.exports = {
   rules: {
     "no-underscore-dangle": ["off", { allow: ["id"] }],
     "no-unused-vars": "off",
+    "object-shorthand": "off",
   },
 };

@@ -46,6 +46,14 @@ const userSchema = new mongoose.Schema({
     maxlength: 20,
     default: "0000000000",
   },
+
+  typeofuser: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
+    default: "Test User Type",
+  },
 });
 
 module.exports = mongoose.model("user", userSchema);
