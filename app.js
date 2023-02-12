@@ -1,4 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
+require("dotenv").config();
+
+console.log(process.env);
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");

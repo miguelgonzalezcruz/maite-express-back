@@ -13,5 +13,7 @@ module.exports = {
     "no-underscore-dangle": ["off", { allow: ["id"] }],
     "no-unused-vars": "off",
     "object-shorthand": "off",
+    "prefer-destructuring": "off",
+    "consistent-return": "off",
   },
 };

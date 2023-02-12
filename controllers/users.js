@@ -1,4 +1,5 @@
-/* eslint-disable consistent-return */
+require("dotenv").config();
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const hubspot = require("@hubspot/api-client");
@@ -6,7 +7,8 @@ const hubspot = require("@hubspot/api-client");
 const User = require("../models/user");
 const { errorHandling, orFailError } = require("../utils/errors");
 
-const { JWT_SECRET, HubsK } = require("../utils/config");
+const HubsK = process.env.HubsK;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
