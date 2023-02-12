@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    minlength: 10,
+    minlength: 5,
     maxlength: 20,
     default: "0000000000",
   },

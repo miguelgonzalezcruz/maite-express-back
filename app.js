@@ -8,11 +8,10 @@ const { PORT = 3001 } = process.env;
 mongoose.connect("mongodb://localhost:27017/maite_db");
 
 const app = express();
+app.use(express.json());
 
 app.post("/signin", login);
 app.post("/signup", createUser);
-
-app.use(express.json());
 
 const allowedOrigins = ["http://localhost:3000"];
 
