@@ -69,7 +69,10 @@ const getUser = (req, res) => {
 };
 
 const login = (req, res) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+
   const { email, password } = req.body;
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
