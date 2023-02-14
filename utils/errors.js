@@ -19,41 +19,54 @@ const defaultError = (err, res) => {
 };
 
 const errorHandling = (err, res) => {
-  if (err.name === "ValidationError" || err.name === "CastError") {
-    const badRequest = 400;
-    res.status(badRequest).send({ message: "Ouch! Invalid Input" });
-
-    return;
+  if (err) {
+    const { name } = err;
+    if (name === "ValidationError" || name === "CastError") {
+      badRequestError(err, res);
+    } else if (err.statusCode === 404) {
+      notFoundError(err, res);
+    } else {
+      defaultError(err, res);
+    }
   }
-  if (err.statusCode === 404) {
-    const notFound = 404;
-    res
-      .status(notFound)
-      .send({ message: "Sorry, this is embarrasing. No item found" });
-
-    return;
-  }
-  if (err.statusCode === 409) {
-    const conflict = 409;
-    res.status(conflict).send({ message: "Email already exists" });
-
-    return;
-  }
-  if (err.statusCode === 401) {
-    const unauthorized = 401;
-    res.status(unauthorized).send({ message: "Unauthorized" });
-
-    return;
-  }
-  if (err.statusCode === 403) {
-    const forbidden = 403;
-    res.status(forbidden).send({ message: "Forbidden" });
-
-    return;
-  }
-  const serverError = 500;
-  res.status(serverError).send({ message: "Ouch! something went wrong" });
 };
+
+// const errorHandling = (err, res) => {
+//   if (err && (err.name === "ValidationError" || err.name === "CastError")) {
+//     const badRequest = 400;
+//     res.status(badRequest).send({ message: "Ouch! Invalid Input" });
+
+//     return;
+//   }
+//   if (err.statusCode === 404) {
+//     const notFound = 404;
+//     res
+//       .status(notFound)
+//       .send({ message: "Sorry, this is embarrasing. No item found" });
+
+//     return;
+//   }
+//   if (err.statusCode === 409) {
+//     const conflict = 409;
+//     res.status(conflict).send({ message: "Email already exists" });
+
+//     return;
+//   }
+//   if (err.statusCode === 401) {
+//     const unauthorized = 401;
+//     res.status(unauthorized).send({ message: "Unauthorized" });
+
+//     return;
+//   }
+//   if (err.statusCode === 403) {
+//     const forbidden = 403;
+//     res.status(forbidden).send({ message: "Forbidden" });
+
+//     return;
+//   }
+//   const serverError = 500;
+//   res.status(serverError).send({ message: "Ouch! something went wrong" });
+// };
 
 module.exports = {
   errorHandling,
