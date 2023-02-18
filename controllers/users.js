@@ -58,7 +58,7 @@ const getUsers = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  User.findById(req.params.userId)
+  User.findById(req.user)
     .orFail(() => {
       orFailError();
     })
@@ -88,41 +88,3 @@ const login = (req, res) => {
 };
 
 module.exports = { getUsers, getUser, createUser, login };
-
-// .then(
-//   hubspotClient.crm.contacts.basicApi.create({
-//     properties: {
-//       email: email,
-//       firstname: name,
-//       lastname: surname,
-//     },
-//   })
-// )
-
-// const hubspotClient = new hubspot.Client({
-//   accessToken: YOUR_ACCESS_TOKEN,
-// });
-
-// const hubspotClient = new hubspot.Client({
-//   apiKey: process.env.HUBSPOT_API_KEY,
-// });
-
-// const createUser = (req, res) => {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-//   const { name, surname, email, phone, typeofuser } = req.body || {};
-//   if (!name || !surname || !email || !phone || !typeofuser) {
-//     return res.status(400).send({ error: "Missing required fields" });
-//   }
-//   User.findOne({ email }).then((user, err) => {
-//     if (user) {
-//       errorHandling(err, res);
-//     }
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => res.status(201).send(data))
-//         .catch(() => {
-//           errorHandling(err, res);
-//         });
-//     });
-//   });
-// };
