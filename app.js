@@ -19,9 +19,7 @@ const allowedOrigins = [
   "https://api.maiteapp.students.nomoredomainssbs.ru",
 ];
 
-// app.use(cors({ origin: allowedOrigins }));
-
-app.use(cors());
+app.use(cors({ origin: allowedOrigins }));
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
