@@ -15,7 +15,6 @@ const hubspotClient = new hubspot.Client({
 });
 
 const createUser = (req, res) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   const { name, surname, email, phone, typeofuser } = req.body;
   User.findOne({ email }).then((user, err) => {
     if (user) {
@@ -71,8 +70,6 @@ const getUser = (req, res) => {
 };
 
 const login = (req, res) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
