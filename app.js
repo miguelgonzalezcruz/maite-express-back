@@ -36,6 +36,8 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.options("/users/me", cors());
+
 app.post("/signin", login);
 app.post("/signup", createUser);
 
