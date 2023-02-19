@@ -14,6 +14,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://maiteapp.students.nomoredomainssbs.ru",
+  "https://www.maiteapp.students.nomoredomainssbs.ru",
+  "http://www.maiteapp.students.nomoredomainssbs.ru",
   "http://maiteapp.students.nomoredomainssbs.ru",
   "https://api.maiteapp.students.nomoredomainssbs.ru",
   "http://api.maiteapp.students.nomoredomainssbs.ru",
