@@ -14,30 +14,27 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://maiteapp.students.nomoredomainssbs.ru",
+  "http://maiteapp.students.nomoredomainssbs.ru",
   "https://www.maiteapp.students.nomoredomainssbs.ru",
   "http://www.maiteapp.students.nomoredomainssbs.ru",
-  "http://maiteapp.students.nomoredomainssbs.ru",
   "https://api.maiteapp.students.nomoredomainssbs.ru",
   "http://api.maiteapp.students.nomoredomainssbs.ru",
 ];
 
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", "*");
-  }
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, HEAD, PUT, PATCH, POST, DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
+//   if (allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//   }
+//   res.header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   next();
+// });
 
 app.use(express.json());
 
