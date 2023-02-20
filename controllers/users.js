@@ -14,24 +14,6 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = (req, res) => {
-  const { name, surname, email, phone, typeofuser } = req.body;
-  User.findOne({ email }).then((user, err) => {
-    if (user) {
-      errorHandling(err, res);
-    }
-    return bcrypt.hash(req.body.password, 10).then((hash) => {
-      User.create({ name, surname, email, phone, typeofuser, password: hash })
-        .then((data) => {
-          res.status(201).send(data);
-        })
-        .catch(() => {
-          errorHandling(err, res);
-        });
-    });
-  });
-};
-
 // const createUser = (req, res) => {
 //   const { name, surname, email, phone, typeofuser } = req.body;
 //   User.findOne({ email }).then((user, err) => {
@@ -63,6 +45,37 @@ const createUser = (req, res) => {
 //     });
 //   });
 // };
+
+const createUser = async (req, res) => {
+  const { name, surname, email, phone, typeofuser } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      throw new Error("User already exists");
+    }
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const createdUser = await User.create({
+      name,
+      surname,
+      email,
+      phone,
+      typeofuser,
+      password: hash,
+    });
+    const hubspotPromise = hubspotClient.crm.contacts.basicApi.create({
+      properties: {
+        email: email,
+        firstname: name,
+        lastname: surname,
+        phone: phone,
+      },
+    });
+    await Promise.all([hubspotPromise]);
+    res.status(201).send(createdUser);
+  } catch (err) {
+    errorHandling(err, res);
+  }
+};
 
 const getUsers = (req, res) => {
   User.find({})
