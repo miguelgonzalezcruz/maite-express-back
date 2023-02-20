@@ -47,3 +47,36 @@
 //     });
 //   });
 // };
+
+// const createUser = async (req, res, next) => {
+//   const { name, surname, email, phone, typeofuser } = req.body;
+//   try {
+//     const user = await User.findOne({ email });
+//     if (user) {
+//       const error = new Error("User already exists");
+//       error.status = 409; // set status code to 409 Conflict
+//       throw error; // throw the error to be handled by the error middleware
+//     }
+//     const hash = await bcrypt.hash(req.body.password, 10);
+//     const createdUser = await User.create({
+//       name,
+//       surname,
+//       email,
+//       phone,
+//       typeofuser,
+//       password: hash,
+//     });
+//     const hubspotPromise = hubspotClient.crm.contacts.basicApi.create({
+//       properties: {
+//         email: email,
+//         firstname: name,
+//         lastname: surname,
+//         phone: phone,
+//       },
+//     });
+//     await Promise.all([hubspotPromise]);
+//     res.status(201).send(createdUser);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
