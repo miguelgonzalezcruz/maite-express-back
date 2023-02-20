@@ -19,7 +19,9 @@ const createUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      throw new Error("User already exists");
+      const error = new Error("User already exists");
+      error.status = 409; // set status code to 409 Conflict
+      throw error; // throw the error to be handled by the error middleware
     }
     const hash = await bcrypt.hash(req.body.password, 10);
     const createdUser = await User.create({
