@@ -21,7 +21,7 @@ const app = express();
 //   "http://api.maiteapp.students.nomoredomainssbs.ru",
 // ];
 
-app.use(cors({ origin: "*" }));
+app.use(cors("*"));
 
 app.use(express.json());
 
