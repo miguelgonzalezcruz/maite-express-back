@@ -14,39 +14,7 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-// const createUser = (req, res) => {
-//   const { name, surname, email, phone, typeofuser } = req.body;
-//   User.findOne({ email }).then((user, err) => {
-//     if (user) {
-//       errorHandling(err, res);
-//     }
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => {
-//           hubspotClient.crm.contacts.basicApi
-//             .create({
-//               properties: {
-//                 email: email,
-//                 firstname: name,
-//                 lastname: surname,
-//                 phone: phone,
-//               },
-//             })
-//             .then(() => {
-//               res.status(201).send(data);
-//             })
-//             .catch((hubspotError) => {
-//               console.error(hubspotError);
-//             });
-//         })
-//         .catch(() => {
-//           errorHandling(err, res);
-//         });
-//     });
-//   });
-// };
-
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { name, surname, email, phone, typeofuser } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -73,7 +41,7 @@ const createUser = async (req, res) => {
     await Promise.all([hubspotPromise]);
     res.status(201).send(createdUser);
   } catch (err) {
-    errorHandling(err, res);
+    next(err);
   }
 };
 
