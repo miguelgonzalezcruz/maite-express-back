@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
@@ -18,19 +19,58 @@ const createUser = (req, res) => {
   const { name, surname, email, phone, typeofuser } = req.body;
   User.findOne({ email }).then((user, err) => {
     if (user) {
-      errorHandling(err, res);
+      return errorHandling(err, res);
     }
     return bcrypt.hash(req.body.password, 10).then((hash) => {
-      User.create({ name, surname, email, phone, typeofuser, password: hash })
+      return User.create({
+        name,
+        surname,
+        email,
+        phone,
+        typeofuser,
+        password: hash,
+      })
         .then((data) => {
-          res.status(201).send(data);
+          return hubspotClient.crm.contacts.basicApi
+            .create({
+              properties: {
+                email: email,
+                firstname: name,
+                lastname: surname,
+                phone: phone,
+              },
+            })
+            .then(() => {
+              res.status(201).send(data);
+            })
+            .catch((hubspotError) => {
+              console.error(hubspotError);
+            });
         })
-        .catch(() => {
-          errorHandling(err, res);
+        .catch((error) => {
+          return errorHandling(error, res);
         });
     });
   });
 };
+
+// const createUser = (req, res) => {
+//   const { name, surname, email, phone, typeofuser } = req.body;
+//   User.findOne({ email }).then((user, err) => {
+//     if (user) {
+//       errorHandling(err, res);
+//     }
+//     return bcrypt.hash(req.body.password, 10).then((hash) => {
+//       User.create({ name, surname, email, phone, typeofuser, password: hash })
+//         .then((data) => {
+//           res.status(201).send(data);
+//         })
+//         .catch(() => {
+//           errorHandling(err, res);
+//         });
+//     });
+//   });
+// };
 
 const getUsers = (req, res) => {
   User.find({})
