@@ -14,37 +14,22 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = async (req, res, next) => {
+const createUser = (req, res) => {
   const { name, surname, email, phone, typeofuser } = req.body;
-  try {
-    const user = await User.findOne({ email });
+  User.findOne({ email }).then((user, err) => {
     if (user) {
-      const error = new Error("User already exists");
-      error.status = 409; // set status code to 409 Conflict
-      throw error; // throw the error to be handled by the error middleware
+      errorHandling(err, res);
     }
-    const hash = await bcrypt.hash(req.body.password, 10);
-    const createdUser = await User.create({
-      name,
-      surname,
-      email,
-      phone,
-      typeofuser,
-      password: hash,
+    return bcrypt.hash(req.body.password, 10).then((hash) => {
+      User.create({ name, surname, email, phone, typeofuser, password: hash })
+        .then((data) => {
+          res.status(201).send(data);
+        })
+        .catch(() => {
+          errorHandling(err, res);
+        });
     });
-    const hubspotPromise = hubspotClient.crm.contacts.basicApi.create({
-      properties: {
-        email: email,
-        firstname: name,
-        lastname: surname,
-        phone: phone,
-      },
-    });
-    await Promise.all([hubspotPromise]);
-    res.status(201).send(createdUser);
-  } catch (err) {
-    next(err);
-  }
+  });
 };
 
 const getUsers = (req, res) => {
