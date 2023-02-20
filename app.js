@@ -11,6 +11,8 @@ mongoose.connect("mongodb://localhost:27017/maite_db");
 
 const app = express();
 
+app.use(cors("*"));
+
 // const allowedOrigins = [
 //   "http://localhost:3000",
 //   "https://maiteapp.students.nomoredomainssbs.ru",
@@ -20,8 +22,6 @@ const app = express();
 //   "https://api.maiteapp.students.nomoredomainssbs.ru",
 //   "http://api.maiteapp.students.nomoredomainssbs.ru",
 // ];
-
-app.use(cors("*"));
 
 app.use(express.json());
 
