@@ -140,3 +140,37 @@
 //     next(err);
 //   }
 // };
+
+// const createUser = (req, res) => {
+//   const { name, surname, email, phone, typeofuser } = req.body;
+
+//   return User.findOne({ email }).then((user, err) => {
+//     if (user) {
+//       return res.status(400).send({ message: "User already exists" });
+//     }
+
+//     return bcrypt.hash(req.body.password, 10).then((hash) => {
+//       User.create({ name, surname, email, phone, typeofuser, password: hash })
+//         .then((data) => {
+//           return hubspotClient.crm.contacts.basicApi
+//             .create({
+//               properties: {
+//                 email: email,
+//                 firstname: name,
+//                 lastname: surname,
+//                 phone: phone,
+//               },
+//             })
+//             .then(() => {
+//               res.status(201).send(data);
+//             })
+//             .catch((hubspotError) => {
+//               console.error(hubspotError);
+//             });
+//         })
+//         .catch(() => {
+//           errorHandling(err, res);
+//         });
+//     });
+//   });
+// };

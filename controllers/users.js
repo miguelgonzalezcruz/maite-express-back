@@ -4,6 +4,7 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const hubspot = require("@hubspot/api-client");
+const Boom = require("boom");
 
 const User = require("../models/user");
 const { errorHandling, orFailError } = require("../utils/errors");
@@ -21,7 +22,7 @@ const createUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      throw new Error("User already exists");
+      throw Boom.badRequest("User already exists");
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -46,43 +47,15 @@ const createUser = async (req, res) => {
 
     res.status(201).send(newUser);
   } catch (error) {
-    errorHandling(error, res);
+    if (Boom.isBoom(error)) {
+      // if the error is a Boom error, return it directly
+      res.status(error.output.statusCode).json(error.output.payload);
+    } else {
+      // otherwise, handle the error with your own error handling function
+      errorHandling(error, res);
+    }
   }
 };
-
-// const createUser = (req, res) => {
-//   const { name, surname, email, phone, typeofuser } = req.body;
-
-//   return User.findOne({ email }).then((user, err) => {
-//     if (user) {
-//       errorHandling(err, res);
-//     }
-
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => {
-//           return hubspotClient.crm.contacts.basicApi
-//             .create({
-//               properties: {
-//                 email: email,
-//                 firstname: name,
-//                 lastname: surname,
-//                 phone: phone,
-//               },
-//             })
-//             .then(() => {
-//               res.status(201).send(data);
-//             })
-//             .catch((hubspotError) => {
-//               console.error(hubspotError);
-//             });
-//         })
-//         .catch(() => {
-//           errorHandling(err, res);
-//         });
-//     });
-//   });
-// };
 
 // const createUser = (req, res) => {
 //   const { name, surname, email, phone, typeofuser } = req.body;
