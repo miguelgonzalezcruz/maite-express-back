@@ -48,10 +48,8 @@ const hubspotClient = new hubspot.Client({
 //     res.status(201).send(newUser);
 //   } catch (error) {
 //     if (Boom.isBoom(error)) {
-//       // if the error is a Boom error, return it directly
 //       res.status(error.output.statusCode).json(error.output.payload);
 //     } else {
-//       // otherwise, handle the error with your own error handling function
 //       errorHandling(error, res);
 //     }
 //   }
@@ -59,20 +57,43 @@ const hubspotClient = new hubspot.Client({
 
 const createUser = (req, res) => {
   const { name, surname, email, phone, typeofuser } = req.body;
-  User.findOne({ email }).then((user, err) => {
+  User.findOne({ email }).then((user) => {
     if (user) {
-      return errorHandling(err, res);
+      return res.status(400).send({ message: "User already exists" });
     }
     return bcrypt.hash(req.body.password, 10).then((hash) => {
       User.create({ name, surname, email, phone, typeofuser, password: hash })
         .then((data) => {
           res.status(201).send(data);
         })
-        .catch(() => {
-          errorHandling(err, res);
+        .catch((err) => {
+          if (Boom.isBoom(err)) {
+            res.status(err.output.statusCode).json(err.output.payload);
+          } else {
+            errorHandling(err, res);
+          }
         });
     });
   });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
+    })
+    .catch((err) => {
+      if (Boom.isBoom(err)) {
+        res.status(err.output.statusCode).json(err.output.payload);
+      } else {
+        errorHandling(err, res);
+      }
+    });
 };
 
 const getUsers = (req, res) => {
@@ -92,21 +113,6 @@ const getUser = (req, res) => {
     })
     .then((data) => {
       res.status(200).send(data);
-    })
-    .catch((err) => {
-      errorHandling(err, res);
-    });
-};
-
-const login = (req, res) => {
-  const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-      res.send({ token });
     })
     .catch((err) => {
       errorHandling(err, res);
