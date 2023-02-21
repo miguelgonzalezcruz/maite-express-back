@@ -1,3 +1,31 @@
+// const createUser = async (req, res) => {
+//   const { name, surname, email, phone, typeofuser, password } = req.body;
+
+//   try {
+//     const user = await User.findOne({ email });
+//     if (user) {
+//       throw new Error('User already exists');
+//     }
+
+//     const hash = await bcrypt.hash(password, 10);
+
+//     const newUser = await User.create({ name, surname, email, phone, typeofuser, password: hash });
+
+//     await hubspotClient.crm.contacts.basicApi.create({
+//       properties: {
+//         email: email,
+//         firstname: name,
+//         lastname: surname,
+//         phone: phone,
+//       },
+//     });
+
+//     res.status(201).send(newUser);
+//   } catch (error) {
+//     errorHandling(error, res);
+//   }
+// };
+
 // const createUser = (req, res) => {
 //   const { name, surname, email, phone, typeofuser } = req.body;
 //   User.findOne({ email }).then((user, err) => {

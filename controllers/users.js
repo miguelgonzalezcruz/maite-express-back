@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
@@ -14,23 +15,92 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = (req, res) => {
-  const { name, surname, email, phone, typeofuser } = req.body;
-  User.findOne({ email }).then((user, err) => {
+const createUser = async (req, res) => {
+  const { name, surname, email, phone, typeofuser, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
     if (user) {
-      errorHandling(err, res);
+      throw new Error("User already exists");
     }
-    return bcrypt.hash(req.body.password, 10).then((hash) => {
-      User.create({ name, surname, email, phone, typeofuser, password: hash })
-        .then((data) => {
-          res.status(201).send(data);
-        })
-        .catch(() => {
-          errorHandling(err, res);
-        });
+
+    const hash = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      name,
+      surname,
+      email,
+      phone,
+      typeofuser,
+      password: hash,
     });
-  });
+
+    await hubspotClient.crm.contacts.basicApi.create({
+      properties: {
+        email: email,
+        firstname: name,
+        lastname: surname,
+        phone: phone,
+      },
+    });
+
+    res.status(201).send(newUser);
+  } catch (error) {
+    errorHandling(error, res);
+  }
 };
+
+// const createUser = (req, res) => {
+//   const { name, surname, email, phone, typeofuser } = req.body;
+
+//   return User.findOne({ email }).then((user, err) => {
+//     if (user) {
+//       errorHandling(err, res);
+//     }
+
+//     return bcrypt.hash(req.body.password, 10).then((hash) => {
+//       User.create({ name, surname, email, phone, typeofuser, password: hash })
+//         .then((data) => {
+//           return hubspotClient.crm.contacts.basicApi
+//             .create({
+//               properties: {
+//                 email: email,
+//                 firstname: name,
+//                 lastname: surname,
+//                 phone: phone,
+//               },
+//             })
+//             .then(() => {
+//               res.status(201).send(data);
+//             })
+//             .catch((hubspotError) => {
+//               console.error(hubspotError);
+//             });
+//         })
+//         .catch(() => {
+//           errorHandling(err, res);
+//         });
+//     });
+//   });
+// };
+
+// const createUser = (req, res) => {
+//   const { name, surname, email, phone, typeofuser } = req.body;
+//   User.findOne({ email }).then((user, err) => {
+//     if (user) {
+//       errorHandling(err, res);
+//     }
+//     return bcrypt.hash(req.body.password, 10).then((hash) => {
+//       User.create({ name, surname, email, phone, typeofuser, password: hash })
+//         .then((data) => {
+//           res.status(201).send(data);
+//         })
+//         .catch(() => {
+//           errorHandling(err, res);
+//         });
+//     });
+//   });
+// };
 
 const getUsers = (req, res) => {
   User.find({})
