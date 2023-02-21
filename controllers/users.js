@@ -16,64 +16,64 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = async (req, res) => {
-  const { name, surname, email, phone, typeofuser, password } = req.body;
+// const createUser = async (req, res) => {
+//   const { name, surname, email, phone, typeofuser, password } = req.body;
 
-  try {
-    const user = await User.findOne({ email });
-    if (user) {
-      throw Boom.badRequest("User already exists");
-    }
-
-    const hash = await bcrypt.hash(password, 10);
-
-    const newUser = await User.create({
-      name,
-      surname,
-      email,
-      phone,
-      typeofuser,
-      password: hash,
-    });
-
-    await hubspotClient.crm.contacts.basicApi.create({
-      properties: {
-        email: email,
-        firstname: name,
-        lastname: surname,
-        phone: phone,
-      },
-    });
-
-    res.status(201).send(newUser);
-  } catch (error) {
-    if (Boom.isBoom(error)) {
-      // if the error is a Boom error, return it directly
-      res.status(error.output.statusCode).json(error.output.payload);
-    } else {
-      // otherwise, handle the error with your own error handling function
-      errorHandling(error, res);
-    }
-  }
-};
-
-// const createUser = (req, res) => {
-//   const { name, surname, email, phone, typeofuser } = req.body;
-//   User.findOne({ email }).then((user, err) => {
+//   try {
+//     const user = await User.findOne({ email });
 //     if (user) {
-//       errorHandling(err, res);
+//       throw Boom.badRequest("User already exists");
 //     }
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => {
-//           res.status(201).send(data);
-//         })
-//         .catch(() => {
-//           errorHandling(err, res);
-//         });
+
+//     const hash = await bcrypt.hash(password, 10);
+
+//     const newUser = await User.create({
+//       name,
+//       surname,
+//       email,
+//       phone,
+//       typeofuser,
+//       password: hash,
 //     });
-//   });
+
+//     await hubspotClient.crm.contacts.basicApi.create({
+//       properties: {
+//         email: email,
+//         firstname: name,
+//         lastname: surname,
+//         phone: phone,
+//       },
+//     });
+
+//     res.status(201).send(newUser);
+//   } catch (error) {
+//     if (Boom.isBoom(error)) {
+//       // if the error is a Boom error, return it directly
+//       res.status(error.output.statusCode).json(error.output.payload);
+//     } else {
+//       // otherwise, handle the error with your own error handling function
+//       errorHandling(error, res);
+//     }
+//   }
 // };
+
+const createUser = (req, res) => {
+  const { name, surname, email, phone, typeofuser } = req.body;
+  User.findOne({ email }).then((user, err) => {
+    if (user) {
+      errorHandling(err, res);
+    }
+    return bcrypt.hash(req.body.password, 10).then((hash) => {
+      User.create({ name, surname, email, phone, typeofuser, password: hash })
+        .then((data) => {
+          res.status(201).send(data);
+        })
+        .catch(() => {
+          errorHandling(err, res);
+        });
+    });
+  });
+};
 
 const getUsers = (req, res) => {
   User.find({})
