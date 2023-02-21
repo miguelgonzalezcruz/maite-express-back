@@ -10,7 +10,9 @@ const User = require("../models/user");
 const { errorHandling, orFailError } = require("../utils/errors");
 
 const HubsK = process.env.HubsK;
-const JWT_SECRET = process.env.JWT_SECRET;
+// const JWT_SECRET = process.env.JWT_SECRET;
+
+const { JWT_SECRET } = require("../utils/config");
 
 const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
