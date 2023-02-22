@@ -57,28 +57,6 @@ const createUser = async (req, res) => {
   }
 };
 
-// const createUser = (req, res) => {
-//   const { name, surname, email, phone, typeofuser } = req.body;
-//   User.findOne({ email }).then((user) => {
-//     if (user) {
-//       return res.status(400).send({ message: "User already exists" });
-//     }
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => {
-//           res.status(201).send(data);
-//         })
-//         .catch((err) => {
-//           if (Boom.isBoom(err)) {
-//             res.status(err.output.statusCode).json(err.output.payload);
-//           } else {
-//             errorHandling(err, res);
-//           }
-//         });
-//     });
-//   });
-// };
-
 const login = (req, res) => {
   const { email, password } = req.body;
 
