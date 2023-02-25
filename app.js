@@ -31,6 +31,7 @@ app.post("/signup", createUser);
 app.use(errorHandling);
 
 app.use("/users", require("./routes/users"), errorHandling);
+app.use("/items", require("./routes/furnitureitems"), errorHandling);
 
 app.use((req, res) => {
   res.status(404).send({ message: "Requested resource not found" });
