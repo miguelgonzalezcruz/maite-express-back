@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
@@ -9,6 +8,9 @@ const Boom = require("boom");
 const User = require("../models/user");
 const { errorHandling, orFailError } = require("../utils/errors");
 
+const NotFoundError = require("../errors/not-found-err");
+const ConflictError = require("../errors/conflict-err");
+
 // const HubsK = process.env.HubsK;
 // const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -18,13 +20,14 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { name, surname, email, phone, typeofuser, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (user) {
-      throw Boom.badRequest("User already exists");
+      const error = new ConflictError("Email already exists");
+      return next(error);
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -57,7 +60,7 @@ const createUser = async (req, res) => {
   }
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -71,7 +74,8 @@ const login = (req, res) => {
       if (Boom.isBoom(err)) {
         res.status(err.output.statusCode).json(err.output.payload);
       } else {
-        errorHandling(err, res);
+        const error = new NotFoundError("Incorrect email or password");
+        return next(error);
       }
     });
 };

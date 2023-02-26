@@ -1,6 +1,14 @@
+const hubspot = require("@hubspot/api-client");
 const furnitureItem = require("../models/furnitureItem");
-const { NotFoundError } = require("../errors/not-found-err");
-const { ConflictError } = require("../errors/conflict-err");
+const NotFoundError = require("../errors/not-found-err");
+const ConflictError = require("../errors/conflict-err");
+const ForbiddenError = require("../errors/ForbiddenError");
+
+const { HubsK } = require("../utils/config");
+
+const hubspotClient = new hubspot.Client({
+  accessToken: HubsK,
+});
 
 const getItems = (req, res, next) => {
   furnitureItem
@@ -58,9 +66,7 @@ const deleteItem = async (req, res, next) => {
       await item.remove();
       return res.send({ furnitureItem: item });
     }
-    res
-      .status(403)
-      .send({ message: "Insufficient permissions to delete item" });
+    throw new ForbiddenError("Insufficient permissions to delete item");
   } catch (err) {
     next(err);
   }
