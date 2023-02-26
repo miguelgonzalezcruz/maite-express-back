@@ -24,8 +24,6 @@ router.post(
       imageUrl: Joi.string().required().uri(),
       description: Joi.string().required().min(10).max(1000),
       forsale: Joi.boolean().required(),
-      booked: Joi.boolean().required(),
-      owner: Joi.string().required().length(24).hex(),
     }),
   }),
   createItem

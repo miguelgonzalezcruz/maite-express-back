@@ -42,7 +42,7 @@ const furnitureItemSchema = new mongoose.Schema({
   },
   booked: {
     type: Boolean,
-    required: true,
+    required: false,
     default: false,
   },
   owner: {

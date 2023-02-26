@@ -48,6 +48,7 @@ const createItem = (req, res, next) => {
           owner,
           description,
           forsale,
+          booked: false,
         });
       }
     })
