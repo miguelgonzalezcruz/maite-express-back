@@ -1,5 +1,10 @@
 const router = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const { celebrate } = require("celebrate");
+
+const {
+  getCurrentUserSchema,
+  createUserSchema,
+} = require("../validation/uservalidation");
 
 const { getUser, createUser } = require("../controllers/users");
 const auth = require("../middlewares/auth");
@@ -14,29 +19,14 @@ router.get("/me", auth, getCurrentUser);
 router.patch(
   "/me",
   auth,
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      name: Joi.string().required().min(2).max(30),
-      surname: Joi.string().required().min(2).max(30),
-      phone: Joi.string().required().min(5).max(11),
-      typeofuser: Joi.string().required().min(2).max(30),
-    }),
-  }),
+  celebrate({ body: getCurrentUserSchema }),
   getCurrentUser
 );
 
 router.post(
   "/",
   celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-      name: Joi.string().required().min(2).max(30),
-      surname: Joi.string().required().min(2).max(30),
-      phone: Joi.string().required().min(5).max(11),
-      typeofuser: Joi.string().required().min(2).max(30),
-    }),
+    body: createUserSchema,
   }),
   createUser
 );

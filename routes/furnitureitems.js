@@ -1,8 +1,16 @@
 const router = require("express").Router();
 
-const { celebrate, Joi } = require("celebrate");
+const { celebrate } = require("celebrate");
 
 const auth = require("../middlewares/auth");
+
+const {
+  createItemSchema,
+  deleteItemSchema,
+  bookItemSchema,
+  cancelBookItemSchema,
+  getItemSchema,
+} = require("../validation/itemvalidation");
 
 const {
   getItems,
@@ -14,37 +22,20 @@ const {
 } = require("../controllers/furnitureitems");
 
 router.get("/", getItems);
-router.post(
-  "/",
-  auth,
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().required().min(2).max(30),
-      price: Joi.number().required().min(0),
-      imageUrl: Joi.string().required().uri(),
-      description: Joi.string().required().min(10).max(1000),
-      forsale: Joi.boolean().required(),
-    }),
-  }),
-  createItem
-);
+router.post("/", auth, celebrate({ body: createItemSchema }), createItem);
+
 router.delete(
   "/:itemId",
   auth,
-  celebrate({
-    params: Joi.object().keys({
-      itemId: Joi.string().required().length(24).hex(),
-    }),
-  }),
+  celebrate({ body: deleteItemSchema }),
   deleteItem
 );
+
 router.put(
   "/:itemId/book",
   auth,
   celebrate({
-    params: Joi.object().keys({
-      itemId: Joi.string().required().length(24).hex(),
-    }),
+    body: bookItemSchema,
   }),
   bookItem
 );
@@ -53,18 +44,14 @@ router.delete(
   "/:itemId/book",
   auth,
   celebrate({
-    params: Joi.object().keys({
-      itemId: Joi.string().required().length(24).hex(),
-    }),
+    body: cancelBookItemSchema,
   }),
   cancelBookItem
 );
 router.get(
   "/:itemId",
   celebrate({
-    params: Joi.object().keys({
-      itemId: Joi.string().required().length(24).hex(),
-    }),
+    body: getItemSchema,
   }),
   getItem
 );

@@ -4,8 +4,13 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-const { celebrate, Joi } = require("celebrate");
+const { celebrate } = require("celebrate");
 const limiter = require("./middlewares/limiter");
+
+const {
+  createUserSchema,
+  loginSchema,
+} = require("./validation/uservalidation");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { createUser, login } = require("./controllers/users");
@@ -26,30 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 
-app.post(
-  "/signin",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  login
-);
-app.post(
-  "/signup",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-      name: Joi.string().required().min(2).max(30),
-      surname: Joi.string().required().min(2).max(30),
-      phone: Joi.string().required().min(5).max(11),
-      typeofuser: Joi.string().required().min(2).max(30),
-    }),
-  }),
-  createUser
-);
+app.post("/signin", celebrate({ body: loginSchema }), login);
+
+app.post("/signup", celebrate({ body: createUserSchema }), createUser);
 
 app.use(errorHandling);
 
