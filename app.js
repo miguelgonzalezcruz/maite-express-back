@@ -21,7 +21,17 @@ mongoose.connect("mongodb://localhost:27017/maite_db");
 
 const app = express();
 
-app.use(cors("*"));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://maiteapp.students.nomoredomainssbs.ru",
+  "http://maiteapp.students.nomoredomainssbs.ru",
+  "https://www.maiteapp.students.nomoredomainssbs.ru",
+  "http://www.maiteapp.students.nomoredomainssbs.ru",
+  "https://api.maiteapp.students.nomoredomainssbs.ru",
+  "http://api.maiteapp.students.nomoredomainssbs.ru",
+];
+
+app.use(cors({ origin: allowedOrigins }));
 
 app.use(limiter);
 app.use(helmet());
@@ -47,13 +57,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
-
-// const allowedOrigins = [
-//   "http://localhost:3000",
-//   "https://maiteapp.students.nomoredomainssbs.ru",
-//   "http://maiteapp.students.nomoredomainssbs.ru",
-//   "https://www.maiteapp.students.nomoredomainssbs.ru",
-//   "http://www.maiteapp.students.nomoredomainssbs.ru",
-//   "https://api.maiteapp.students.nomoredomainssbs.ru",
-//   "http://api.maiteapp.students.nomoredomainssbs.ru",
-// ];
