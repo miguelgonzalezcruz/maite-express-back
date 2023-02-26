@@ -1,1 +1,7 @@
-This is my first own backend
+**Domain Names**
+
+maiteapp.students.nomoredomainssbs.ru
+www.maiteapp.students.nomoredomainssbs.ru
+api.maiteapp.students.nomoredomainssbs.ru
+
+**Check it out**

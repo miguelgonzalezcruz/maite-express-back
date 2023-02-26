@@ -3,6 +3,16 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
+const { celebrate } = require("celebrate");
+const limiter = require("./middlewares/limiter");
+
+const {
+  createUserSchema,
+  loginSchema,
+} = require("./validation/uservalidation");
+
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { createUser, login } = require("./controllers/users");
 const errorHandling = require("./middlewares/errorHandling");
 
@@ -13,6 +23,31 @@ const app = express();
 
 app.use(cors("*"));
 
+app.use(limiter);
+app.use(helmet());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(requestLogger);
+
+app.post("/signin", celebrate({ body: loginSchema }), login);
+
+app.post("/signup", celebrate({ body: createUserSchema }), createUser);
+
+app.use(errorHandling);
+
+app.use("/users", require("./routes/users"), errorHandling);
+app.use("/items", require("./routes/furnitureitems"), errorHandling);
+
+app.use((req, res) => {
+  res.status(404).send({ message: "Requested resource not found" });
+});
+
+app.listen(PORT, () => {
+  console.log(`App listening at port ${PORT}`);
+});
+
 // const allowedOrigins = [
 //   "http://localhost:3000",
 //   "https://maiteapp.students.nomoredomainssbs.ru",
@@ -22,20 +57,3 @@ app.use(cors("*"));
 //   "https://api.maiteapp.students.nomoredomainssbs.ru",
 //   "http://api.maiteapp.students.nomoredomainssbs.ru",
 // ];
-
-app.use(express.json());
-
-app.post("/signin", login);
-app.post("/signup", createUser);
-
-app.use(errorHandling);
-
-app.use("/users", require("./routes/users"), errorHandling);
-
-app.use((req, res) => {
-  res.status(404).send({ message: "Requested resource not found" });
-});
-
-app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`);
-});

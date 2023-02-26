@@ -1,4 +1,10 @@
 const router = require("express").Router();
+const { celebrate } = require("celebrate");
+
+const {
+  getCurrentUserSchema,
+  createUserSchema,
+} = require("../validation/uservalidation");
 
 const { getUser, createUser } = require("../controllers/users");
 const auth = require("../middlewares/auth");
@@ -10,8 +16,19 @@ const getCurrentUser = (req, res) => {
 
 router.get("/me", auth, getUser);
 router.get("/me", auth, getCurrentUser);
-router.patch("/me", auth, getCurrentUser);
+router.patch(
+  "/me",
+  auth,
+  celebrate({ body: getCurrentUserSchema }),
+  getCurrentUser
+);
 
-router.post("/", createUser);
+router.post(
+  "/",
+  celebrate({
+    body: createUserSchema,
+  }),
+  createUser
+);
 
 module.exports = router;

@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
@@ -7,7 +6,11 @@ const hubspot = require("@hubspot/api-client");
 const Boom = require("boom");
 
 const User = require("../models/user");
-const { errorHandling, orFailError } = require("../utils/errors");
+
+const NotFoundError = require("../errors/not-found-err");
+const ConflictError = require("../errors/conflict-err");
+const UnauthorizedError = require("../errors/unauthorized-error");
+const BadRequestError = require("../errors/bad-request-err");
 
 // const HubsK = process.env.HubsK;
 // const JWT_SECRET = process.env.JWT_SECRET;
@@ -18,13 +21,15 @@ const hubspotClient = new hubspot.Client({
   accessToken: HubsK,
 });
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { name, surname, email, phone, typeofuser, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (user) {
-      throw Boom.badRequest("User already exists");
+      const error = new ConflictError("Email already exists");
+      console.error(error.message);
+      return next(error);
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -47,39 +52,20 @@ const createUser = async (req, res) => {
       },
     });
 
-    res.status(201).send(newUser);
-  } catch (error) {
-    if (Boom.isBoom(error)) {
-      res.status(error.output.statusCode).json(error.output.payload);
-    } else {
-      errorHandling(error, res);
-    }
+    res.status(201).send({
+      _id: newUser._id,
+      name: newUser.name,
+      surname: newUser.surname,
+      email: newUser.email,
+      phone: newUser.phone,
+      typeofuser: newUser.typeofuser,
+    });
+  } catch (err) {
+    next(err);
   }
 };
 
-// const createUser = (req, res) => {
-//   const { name, surname, email, phone, typeofuser } = req.body;
-//   User.findOne({ email }).then((user) => {
-//     if (user) {
-//       return res.status(400).send({ message: "User already exists" });
-//     }
-//     return bcrypt.hash(req.body.password, 10).then((hash) => {
-//       User.create({ name, surname, email, phone, typeofuser, password: hash })
-//         .then((data) => {
-//           res.status(201).send(data);
-//         })
-//         .catch((err) => {
-//           if (Boom.isBoom(err)) {
-//             res.status(err.output.statusCode).json(err.output.payload);
-//           } else {
-//             errorHandling(err, res);
-//           }
-//         });
-//     });
-//   });
-// };
-
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -90,34 +76,30 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      if (Boom.isBoom(err)) {
-        res.status(err.output.statusCode).json(err.output.payload);
-      } else {
-        errorHandling(err, res);
-      }
+      next(new UnauthorizedError("Invalid email or password"));
     });
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      errorHandling(err, res);
+      next(err);
     });
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.user)
     .orFail(() => {
-      orFailError();
+      throw new NotFoundError("User not found");
     })
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      errorHandling(err, res);
+      next(err);
     });
 };
 

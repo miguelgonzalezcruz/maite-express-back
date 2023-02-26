@@ -11,6 +11,7 @@ const furnitureItemSchema = new mongoose.Schema({
     maxlength: 30,
     default: "Test Furniture Item Name",
   },
+
   price: {
     type: Number,
     required: true,
@@ -34,20 +35,15 @@ const furnitureItemSchema = new mongoose.Schema({
     maxlength: 1000,
     default: "Test Furniture Item Description",
   },
-  private: {
+  forsale: {
     type: Boolean,
     required: true,
-    default: false,
+    default: true,
   },
   booked: {
     type: Boolean,
-    required: true,
-    default: false,
-  },
-  bookedby: {
-    type: Schema.Types.ObjectId,
-    ref: "user",
     required: false,
+    default: false,
   },
   owner: {
     type: Schema.Types.ObjectId,

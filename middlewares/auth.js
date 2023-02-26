@@ -7,7 +7,6 @@ const { JWT_SECRET } = require("../utils/config");
 const UnauthorizedError = require("../errors/unauthorized-error");
 
 module.exports = (req, res, next) => {
-  console.log(`JWT_SECRET value: ${JWT_SECRET}`);
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
