@@ -4,16 +4,9 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: true,
-});
-
 const { celebrate, Joi } = require("celebrate");
+const limiter = require("./middlewares/limiter");
+
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { createUser, login } = require("./controllers/users");
 const errorHandling = require("./middlewares/errorHandling");
@@ -24,16 +17,6 @@ mongoose.connect("mongodb://localhost:27017/maite_db");
 const app = express();
 
 app.use(cors("*"));
-
-// const allowedOrigins = [
-//   "http://localhost:3000",
-//   "https://maiteapp.students.nomoredomainssbs.ru",
-//   "http://maiteapp.students.nomoredomainssbs.ru",
-//   "https://www.maiteapp.students.nomoredomainssbs.ru",
-//   "http://www.maiteapp.students.nomoredomainssbs.ru",
-//   "https://api.maiteapp.students.nomoredomainssbs.ru",
-//   "http://api.maiteapp.students.nomoredomainssbs.ru",
-// ];
 
 app.use(limiter);
 app.use(helmet());
@@ -80,3 +63,13 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
+
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "https://maiteapp.students.nomoredomainssbs.ru",
+//   "http://maiteapp.students.nomoredomainssbs.ru",
+//   "https://www.maiteapp.students.nomoredomainssbs.ru",
+//   "http://www.maiteapp.students.nomoredomainssbs.ru",
+//   "https://api.maiteapp.students.nomoredomainssbs.ru",
+//   "http://api.maiteapp.students.nomoredomainssbs.ru",
+// ];

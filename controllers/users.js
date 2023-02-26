@@ -6,10 +6,11 @@ const hubspot = require("@hubspot/api-client");
 const Boom = require("boom");
 
 const User = require("../models/user");
-const { errorHandling, orFailError } = require("../utils/errors");
 
 const NotFoundError = require("../errors/not-found-err");
 const ConflictError = require("../errors/conflict-err");
+const UnauthorizedError = require("../errors/unauthorized-error");
+const BadRequestError = require("../errors/bad-request-err");
 
 // const HubsK = process.env.HubsK;
 // const JWT_SECRET = process.env.JWT_SECRET;
@@ -27,6 +28,7 @@ const createUser = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (user) {
       const error = new ConflictError("Email already exists");
+      console.error(error.message);
       return next(error);
     }
 
@@ -50,13 +52,16 @@ const createUser = async (req, res, next) => {
       },
     });
 
-    res.status(201).send(newUser);
-  } catch (error) {
-    if (Boom.isBoom(error)) {
-      res.status(error.output.statusCode).json(error.output.payload);
-    } else {
-      errorHandling(error, res);
-    }
+    res.status(201).send({
+      _id: newUser._id,
+      name: newUser.name,
+      surname: newUser.surname,
+      email: newUser.email,
+      phone: newUser.phone,
+      typeofuser: newUser.typeofuser,
+    });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -71,35 +76,30 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      if (Boom.isBoom(err)) {
-        res.status(err.output.statusCode).json(err.output.payload);
-      } else {
-        const error = new NotFoundError("Incorrect email or password");
-        return next(error);
-      }
+      next(new UnauthorizedError("Invalid email or password"));
     });
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      errorHandling(err, res);
+      next(err);
     });
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.user)
     .orFail(() => {
-      orFailError();
+      throw new NotFoundError("User not found");
     })
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      errorHandling(err, res);
+      next(err);
     });
 };
 
