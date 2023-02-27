@@ -3,7 +3,7 @@ const validator = require("validator");
 
 const { Schema } = mongoose;
 
-const furnitureItemSchema = new mongoose.Schema({
+const furnitureitem = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -57,4 +57,4 @@ const furnitureItemSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("furnitureitem", furnitureItemSchema);
+module.exports = mongoose.model("furnitureitem", furnitureitem);
