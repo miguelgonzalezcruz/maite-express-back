@@ -4,7 +4,7 @@ const { celebrate } = require("celebrate");
 const {
   getCurrentUserSchema,
   createUserSchema,
-} = require("../validation/uservalidation");
+} = require("../Validation/uservalidation");
 
 const { getUser, createUser } = require("../controllers/users");
 const auth = require("../middlewares/auth");

@@ -10,7 +10,7 @@ const {
   bookItemSchema,
   cancelBookItemSchema,
   getItemSchema,
-} = require("../validation/itemvalidation");
+} = require("../Validation/itemvalidation");
 
 const {
   getItems,

@@ -10,7 +10,7 @@ const { celebrate } = require("celebrate");
 const {
   createUserSchema,
   loginSchema,
-} = require("./validation/uservalidation");
+} = require("./Validation/uservalidation");
 
 const limiter = require("./middlewares/limiter");
 
