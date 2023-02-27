@@ -57,4 +57,4 @@ const furnitureItemSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("furnitureItem", furnitureItemSchema);
+module.exports = mongoose.model("furnitureitem", furnitureItemSchema);

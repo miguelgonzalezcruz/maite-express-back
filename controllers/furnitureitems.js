@@ -1,6 +1,6 @@
 const hubspot = require("@hubspot/api-client");
 
-const furnitureItem = require("../models/furnitureitem");
+const furnitureitem = require("../models/furnitureitem");
 
 const NotFoundError = require("../errors/not-found-err");
 const ConflictError = require("../errors/conflict-err");
@@ -13,7 +13,7 @@ const hubspotClient = new hubspot.Client({
 });
 
 const getItems = (req, res, next) => {
-  furnitureItem
+  furnitureitem
     .find({})
     .then((data) => {
       res.send(data);
@@ -22,7 +22,7 @@ const getItems = (req, res, next) => {
 };
 
 const getItem = (req, res, next) => {
-  furnitureItem
+  furnitureitem
     .findById(req.params.itemId)
     .orFail(() => {
       throw new NotFoundError("Item not found");
@@ -37,13 +37,13 @@ const createItem = (req, res, next) => {
   const { name, price, imageUrl, description, forsale } = req.body;
   const owner = req.user._id;
 
-  furnitureItem
+  furnitureitem
     .findOne({ name: req.body.name, owner: req.user._id })
     .then((item) => {
       if (item) {
         throw new ConflictError("Item already exists");
       } else {
-        return furnitureItem.create({
+        return furnitureitem.create({
           name,
           price,
           imageUrl,
@@ -62,7 +62,7 @@ const createItem = (req, res, next) => {
 
 const deleteItem = async (req, res, next) => {
   try {
-    const item = await furnitureItem.findById(req.params.itemId).orFail(() => {
+    const item = await furnitureitem.findById(req.params.itemId).orFail(() => {
       throw new NotFoundError("Item not found");
     });
     if (item.owner.equals(req.user._id)) {
@@ -76,7 +76,7 @@ const deleteItem = async (req, res, next) => {
 };
 
 const bookItem = (req, res, next) => {
-  furnitureItem
+  furnitureitem
     .findByIdAndUpdate(
       req.params.itemId,
       { $addToSet: { booked: req.user._id } },
@@ -92,7 +92,7 @@ const bookItem = (req, res, next) => {
 };
 
 const cancelBookItem = (req, res, next) => {
-  furnitureItem
+  furnitureitem
     .findByIdAndUpdate(
       req.params.itemId,
       { $pull: { booked: req.user._id } },
