@@ -1,6 +1,7 @@
 const hubspot = require("@hubspot/api-client");
 
-const furnitureItem = require("../models/furnitureItem");
+const furnitureItem = require("../models/furnitureitem");
+
 const NotFoundError = require("../errors/not-found-err");
 const ConflictError = require("../errors/conflict-err");
 const ForbiddenError = require("../errors/ForbiddenError");
