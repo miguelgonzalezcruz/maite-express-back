@@ -14,7 +14,4 @@ node_modules
 .idea
 .vscode
 
-# keys
-
-.env
 
