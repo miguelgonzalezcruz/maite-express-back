@@ -3,14 +3,16 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
+
 const helmet = require("helmet");
 const { celebrate } = require("celebrate");
-const limiter = require("./middlewares/limiter");
 
 const {
   createUserSchema,
   loginSchema,
 } = require("./validation/uservalidation");
+
+const limiter = require("./middlewares/limiter");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { createUser, login } = require("./controllers/users");
