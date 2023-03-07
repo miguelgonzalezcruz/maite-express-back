@@ -31,6 +31,8 @@ const allowedOrigins = [
   "http://www.maiteapp.students.nomoredomainssbs.ru",
   "https://api.maiteapp.students.nomoredomainssbs.ru",
   "http://api.maiteapp.students.nomoredomainssbs.ru",
+  "http://maitereciclando.com",
+  "http://www.maitereciclando.com",
 ];
 
 app.use(cors({ origin: allowedOrigins }));
