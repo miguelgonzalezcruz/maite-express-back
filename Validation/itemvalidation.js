@@ -9,7 +9,7 @@ const createItemSchema = Joi.object({
 });
 
 const deleteItemSchema = Joi.object({
-  itemId: Joi.string().required().length(24).hex(),
+  itemId: Joi.string().required().hex(),
 });
 
 const bookItemSchema = Joi.object({

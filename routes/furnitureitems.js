@@ -24,12 +24,7 @@ const {
 router.get("/", getItems);
 router.post("/", auth, celebrate({ body: createItemSchema }), createItem);
 
-router.delete(
-  "/:itemId",
-  auth,
-  celebrate({ body: deleteItemSchema }),
-  deleteItem
-);
+router.delete("/:itemId", auth, deleteItem);
 
 router.put(
   "/:itemId/book",

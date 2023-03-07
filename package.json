@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/miguelgonzalezcruz/maite-express-back/issues"
   },
-  "homepage": "https://maiteapp.students.nomoredomainssbs.ru/",
+  "homepage": "http://maitereciclando.com/",
   "dependencies": {
     "@hubspot/api-client": "^8.5.0",
     "bcrypt": "^5.1.0",
