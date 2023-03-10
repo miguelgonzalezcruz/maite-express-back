@@ -25,16 +25,12 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://maiteapp.students.nomoredomainssbs.ru",
-  "http://maiteapp.students.nomoredomainssbs.ru",
-  "https://www.maiteapp.students.nomoredomainssbs.ru",
-  "http://www.maiteapp.students.nomoredomainssbs.ru",
-  "https://api.maiteapp.students.nomoredomainssbs.ru",
-  "http://api.maiteapp.students.nomoredomainssbs.ru",
   "http://maitereciclando.com",
   "http://www.maitereciclando.com",
+  "http://api.maitereciclando.com",
   "https://maitereciclando.com",
   "https://www.maitereciclando.com",
+  "https://api.maitereciclando.com",
 ];
 
 app.use(cors({ origin: allowedOrigins }));
